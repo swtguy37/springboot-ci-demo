@@ -4,7 +4,7 @@ pipeline{
 	   stage('Build') {
 		steps {
 			echo 'Build from Jenkins CI CD'
-			sh 'mvn clean install'
+			bat 'mvn clean install'
 		} 
 		}
 	   }
