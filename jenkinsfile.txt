@@ -1,11 +1,16 @@
-pipeline{
-	agent any
-	stages {
-	   withMaven(maven: 'Maven'){
-		steps {
-			echo 'Build from Jenkins CI CD'
-			bat 'mvn clean install'
-		} 
-		}
-	   }
+pipeline {
+    agent any
+
+    tools {
+        maven 'Maven'  // Name you gave in Jenkins Global Tool Configuration
+    }
+
+    stages {
+        stage('Build') {
+            steps {
+                echo 'Build from Jenkins CI/CD'
+                bat 'mvn clean install'
+            }
+        }
+    }
 }
