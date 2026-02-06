@@ -1,0 +1,15 @@
+
+public class Extract {
+
+	public static void main(String[] args) {
+		doStuff();
+	}
+
+	private static void doStuff() {
+		// TODO Auto-generated method stub
+		String stMn = "a12b342c4576d";
+		
+		String[] strVals =  stMn.split("");
+		
+	}
+}
