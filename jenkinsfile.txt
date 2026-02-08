@@ -52,7 +52,7 @@ pipeline {
                     )
                     echo Starting Demo App on 8082...
                    
-		    start java -jar target/demo-0.0.1-SNAPSHOT.jar --server.port=8082 --server.address=0.0.0.0 > demo.log 2>&1                   
+		    java -jar target/demo-0.0.1-SNAPSHOT.jar --server.port=8082 --server.address=0.0.0.0 > demo.log 2>&1                   
                     
                     '''
                 }
