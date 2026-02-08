@@ -8,13 +8,7 @@ pipeline {
 
     stages {
 
-        stage('Clean Workspace') {
-            steps {
-                echo 'Cleaning workspace...'
-                cleanWs()  // safer than deleteDir
-            }
-        }
-
+       
         stage('Build Projects (Parallel)') {
             parallel {
 
