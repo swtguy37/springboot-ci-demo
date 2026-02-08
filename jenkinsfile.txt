@@ -2,55 +2,60 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'   // the Maven tool configured in Jenkins
-        jdk 'Java'      // the JDK configured in Jenkins
+        maven 'Maven'
+        jdk 'Java'
     }
 
     stages {
- stage('Clean Workspace') {
+
+        stage('Clean Workspace') {
             steps {
                 deleteDir()
+                checkout scm
             }
         }
-	stage('Parallel Builds'){
-parallel {
-        stage('Build deployment for Project') {
-            steps {
-                dir('demo') {  // enter demo folder
-                    echo 'Building demo project...'
-                   // bat 'mvn clean package'
 
+        stage('Parallel Builds') {
+            parallel {
 
-		bat '''
-			netstat -ano ^| findstr: 8082 > pid.txt
+                stage('Build & Deploy Demo Project') {
+                    steps {
+                        dir('demo') {
+                            echo 'Building demo project...'
+                            bat 'mvn clean package'
 
-			for /f %%a in (pid.txt) do (
-			   echo Killing process %%a
- 			   taskkill /PID %%a /F
-			)
-			del pid.txt
-			echo Starting application...
-			start java -jar target/*.jar
-		    '''
+                            bat '''
+                            netstat -ano | findstr :8082 > pid.txt
 
+                            for /f "tokens=5" %%a in (pid.txt) do (
+                                echo Killing process %%a
+                                taskkill /PID %%a /F
+                            )
+
+                            del pid.txt
+                            echo Starting application...
+                            start java -jar target\\*.jar
+                            '''
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Build Examples Project') {
-            steps {
-                dir('examples') {  // enter examples folder
-                    echo 'Building examples project...'
-                    bat 'mvn clean install'
+                stage('Build Examples Project') {
+                    steps {
+                        dir('examples') {
+                            echo 'Building examples project...'
+                            bat 'mvn clean install'
+                        }
+                    }
                 }
-            }
-        }
 
-        stage('Build Product Project') {
-            steps {
-                dir('product') {  // enter product folder
-                    echo 'Building product project...'
-                    bat 'mvn clean package'
+                stage('Build Product Project') {
+                    steps {
+                        dir('product') {
+                            echo 'Building product project...'
+                            bat 'mvn clean package'
+                        }
+                    }
                 }
             }
         }
@@ -64,14 +69,11 @@ parallel {
 
     post {
         success {
-	    archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true 
+            archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
             echo 'Artifacts Archived ✅'
         }
         failure {
             echo 'Pipeline finished RED ❌'
         }
     }
-}
-
-}
 }
