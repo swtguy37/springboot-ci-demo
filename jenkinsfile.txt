@@ -2,8 +2,8 @@ pipeline {
     agent any
 
     tools {
-        maven 'Maven'
-        jdk 'Java'
+        maven 'Maven'    // Your Maven tool in Jenkins
+        jdk 'Java'       // Your JDK tool in Jenkins
     }
 
     stages {
@@ -20,23 +20,36 @@ pipeline {
                 stage('Build Demo') {
                     steps {
                         dir('demo') {
+                            echo 'Building Demo Project...'
                             bat 'mvn clean package'
                         }
                     }
                 }
 
+                stage('Build Product') {
+                    steps {
+                        dir('product') {
+                            echo 'Building Product Project...'
+                            bat 'mvn clean package'
+                        }
+                    }
                 }
             }
-        
-        stage('Run Demo App on 8082') {
+        }
+
+        stage('Run Demo on 8082') {
             steps {
                 dir('demo') {
                     bat '''
+                    echo Checking for running app on 8082...
                     netstat -ano | findstr :8082 > pid.txt
-                    for /f "tokens=5" %%a in (pid.txt) do taskkill /PID %%a /F
+                    for /f "tokens=5" %%a in (pid.txt) do (
+                        echo Killing process %%a
+                        taskkill /PID %%a /F
+                    )
                     del pid.txt
 
-                    echo Starting Demo App on 8082
+                    echo Starting Demo App on 8082...
                     start "" java -jar target/demo-0.0.1-SNAPSHOT.jar --server.port=8082
                     '''
                 }
@@ -47,10 +60,10 @@ pipeline {
     post {
         success {
             archiveArtifacts artifacts: '**/target/*.jar', fingerprint: true
-            echo 'Artifacts Archived ✅'
+            echo '✅ Artifacts Archived Successfully'
         }
         failure {
-            echo 'Pipeline finished RED ❌'
+            echo '❌ Pipeline Finished with Errors'
         }
     }
 }
