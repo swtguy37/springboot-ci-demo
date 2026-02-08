@@ -8,6 +8,8 @@ pipeline {
 
     stages {
 
+	stage('Parallel Builds'){
+parallel {
         stage('Build Demo Project') {
             steps {
                 dir('demo') {  // enter demo folder
@@ -51,4 +53,7 @@ pipeline {
             echo 'Pipeline finished RED ❌'
         }
     }
+}
+
+}
 }
