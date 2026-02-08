@@ -10,11 +10,18 @@ pipeline {
 
 	stage('Parallel Builds'){
 parallel {
-        stage('Build Demo Project') {
+        stage('Build deployment for Project') {
             steps {
                 dir('demo') {  // enter demo folder
                     echo 'Building demo project...'
-                    bat 'mvn clean package'
+                   // bat 'mvn clean package'
+
+
+		bat '''
+			for /f "tokens=5" %%a in ('netstat-ano^ | findstr:8082') do taskkill /PID %%a /F
+			start java -jar target/*.jar
+		    '''
+
                 }
             }
         }
