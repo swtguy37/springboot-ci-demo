@@ -34,7 +34,7 @@ pipeline {
 
                             del pid.txt
                             echo Starting application...
-                            start java -jar target\\*.jar
+                            start java -jar target\\*.jar --server.port=8082
                             '''
                         }
                     }
