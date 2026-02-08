@@ -12,7 +12,7 @@ pipeline {
             steps {
                 dir('demo') {  // enter demo folder
                     echo 'Building demo project...'
-                    bat 'mvn clean install'
+                    bat 'mvn clean package'
                 }
             }
         }
