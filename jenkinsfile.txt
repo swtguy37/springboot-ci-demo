@@ -25,13 +25,7 @@ pipeline {
                     }
                 }
 
-                stage('Build Examples') {
-                    steps {
-                        dir('examples') {
-                            bat 'mvn clean install'
-                        }
-                    }
-                }
+                // Removed Build Examples stage because it has no pom.xml
 
                 stage('Build Product') {
                     steps {
