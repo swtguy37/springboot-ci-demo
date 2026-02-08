@@ -11,48 +11,31 @@ pipeline {
         stage('Clean Workspace') {
             steps {
                 deleteDir()
-                checkout scm
             }
         }
 
-        stage('Parallel Builds') {
+        stage('Build Projects (Parallel)') {
             parallel {
 
-                stage('Build & Deploy Demo Project') {
+                stage('Build Demo') {
                     steps {
                         dir('demo') {
-                            echo 'Building demo project...'
                             bat 'mvn clean package'
-
-                            bat '''
-                            netstat -ano | findstr :8082 > pid.txt
-
-                            for /f "tokens=5" %%a in (pid.txt) do (
-                                echo Killing process %%a
-                                taskkill /PID %%a /F
-                            )
-
-                            del pid.txt
-                            echo Starting application...
-                            start java -jar target\\*.jar --server.port=8082
-                            '''
                         }
                     }
                 }
 
-                stage('Build Examples Project') {
+                stage('Build Examples') {
                     steps {
                         dir('examples') {
-                            echo 'Building examples project...'
                             bat 'mvn clean install'
                         }
                     }
                 }
 
-                stage('Build Product Project') {
+                stage('Build Product') {
                     steps {
                         dir('product') {
-                            echo 'Building product project...'
                             bat 'mvn clean package'
                         }
                     }
@@ -60,9 +43,18 @@ pipeline {
             }
         }
 
-        stage('Final Message') {
+        stage('Run Demo App on 8082') {
             steps {
-                echo 'All projects built successfully! ✅'
+                dir('demo') {
+                    bat '''
+                    netstat -ano | findstr :8082 > pid.txt
+                    for /f "tokens=5" %%a in (pid.txt) do taskkill /PID %%a /F
+                    del pid.txt
+
+                    echo Starting Demo App on 8082
+                    start "" java -jar target/demo-0.0.1-SNAPSHOT.jar --server.port=8082
+                    '''
+                }
             }
         }
     }
