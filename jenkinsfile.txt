@@ -27,8 +27,7 @@ pipeline {
 
                 }
             }
-        }
-
+        
         stage('Run Demo App on 8082') {
             steps {
                 dir('demo') {
