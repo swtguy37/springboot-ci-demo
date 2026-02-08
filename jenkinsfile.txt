@@ -44,7 +44,8 @@ pipeline {
 
     post {
         success {
-            echo 'Pipeline finished GREEN ✅'
+	    archiveArtifacts artifacts: '**/target/*.jar, fingerprint: true 
+            echo 'Artifacts Archived ✅'
         }
         failure {
             echo 'Pipeline finished RED ❌'
