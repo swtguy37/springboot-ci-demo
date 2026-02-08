@@ -18,7 +18,7 @@ parallel {
 
 
 		bat '''
-			for /f "tokens=5" %%a in ('netstat-ano^ | findstr:8082') do taskkill /PID %%a /F
+			for /f "tokens=5" %%a in ('netstat -ano ^| findstr:8082') do taskkill /PID %%a /F
 			start java -jar target/*.jar
 		    '''
 
