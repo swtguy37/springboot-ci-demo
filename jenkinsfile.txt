@@ -18,7 +18,14 @@ parallel {
 
 
 		bat '''
-			for /f "tokens=5" %%a in ('netstat -ano ^| findstr:8082') do taskkill /PID %%a /F
+			netstat -ano ^| findstr: 8082 > pid.txt
+
+			for /f %%a in (pid.txt) do (
+			   echo Killing process %%a
+ 			   taskkill /PID %%a /F
+			)
+			del pid.txt
+			echo Starting application...
 			start java -jar target/*.jar
 		    '''
 
