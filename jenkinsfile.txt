@@ -51,7 +51,7 @@ pipeline {
                         taskkill /PID %%a /F
                     )
                     echo Starting Demo App on 8082...
-                    //java -jar target/demo-0.0.1-SNAPSHOT.jar
+                   
 		    start java -jar target/demo-0.0.1-SNAPSHOT.jar --server.port=8082 --server.address=0.0.0.0 > demo.log 2>&1                   
                     
                     '''
